@@ -1,4 +1,4 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from functools import lru_cache
 
 
@@ -20,6 +20,8 @@ class Settings(BaseSettings):
     # App Config
     app_name: str = "SQL Agent"
     debug: bool = False
+    database_url: str | None = None
+    properties_limit: int = 5
 
 @lru_cache
 def get_settings() -> Settings:

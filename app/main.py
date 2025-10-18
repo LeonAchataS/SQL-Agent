@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import get_settings
+from app.services import db as db_service
 
 # Attempt to import the agent router if the package is present. This file
 # remains runnable even if the skeleton packages are not yet populated.
@@ -20,6 +21,23 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+async def on_startup():
+    try:
+        await db_service.init_db_pool()
+    except Exception:
+        # If DB not configured, skip initialization (tests/dev)
+        pass
+
+
+@app.on_event("shutdown")
+async def on_shutdown():
+    try:
+        await db_service.close_db_pool()
+    except Exception:
+        pass
 
 
 @app.get("/health")

@@ -12,4 +12,7 @@ async def extract_filters_from_text(text: str) -> dict[str, Any]:
 
     Returns a dictionary shaped like the Filter Pydantic model (to be defined).
     """
-    return {}
+    # NOTE: This function is intentionally left as a stub so tests can mock it.
+    # Implementations should call the LLM with the EXTRACT_FILTERS_PROMPT and
+    # return a JSON-serializable dict with the extracted keys/values.
+    raise NotImplementedError("LLM client not implemented; mock this function in tests or implement an OpenAI call")

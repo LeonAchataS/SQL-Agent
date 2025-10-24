@@ -160,6 +160,73 @@ python -m http.server 3000
 # Visitar http://localhost:3000
 ```
 
+## 🐳 Instalación con Docker
+
+### Opción 1: Docker Compose (Recomendado)
+
+Incluye PostgreSQL + Aplicación con un solo comando:
+
+```bash
+# 1. Crear archivo .env con tu API key
+echo "OPENAI_API_KEY=sk-your-api-key" > .env
+
+# 2. Levantar todos los servicios
+docker-compose up -d
+
+# 3. Ver logs
+docker-compose logs -f app
+
+# 4. Acceder a la aplicación
+# Backend: http://localhost:8000
+# Frontend: abrir frontend/index.html en el navegador
+```
+
+**Servicios incluidos:**
+- PostgreSQL en puerto 5432
+- API en puerto 8000
+- Volumen persistente para datos
+
+**Comandos útiles:**
+```bash
+# Detener servicios
+docker-compose down
+
+# Reconstruir imagen
+docker-compose build
+
+# Ver estado
+docker-compose ps
+
+# Limpiar todo (incluyendo volúmenes)
+docker-compose down -v
+```
+
+### Opción 2: Solo Docker (sin PostgreSQL)
+
+Si ya tienes PostgreSQL corriendo:
+
+```bash
+# 1. Construir imagen
+docker build -t sql-agent .
+
+# 2. Ejecutar contenedor
+docker run -d \
+  --name sql-agent-app \
+  -p 8000:8000 \
+  -e OPENAI_API_KEY=sk-your-api-key \
+  -e DATABASE_URL=postgresql://user:pass@host.docker.internal:5432/property_db \
+  sql-agent
+
+# 3. Ver logs
+docker logs -f sql-agent-app
+
+# 4. Detener
+docker stop sql-agent-app
+docker rm sql-agent-app
+```
+
+**Nota:** En Windows/Mac usa `host.docker.internal` para conectar a PostgreSQL en localhost.
+
 ## 📡 API Endpoints
 
 ### Base URL

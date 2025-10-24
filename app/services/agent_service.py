@@ -51,17 +51,23 @@ async def handle_message(session_id: str | None, message: str) -> dict[str, Any]
     missing = [f for f in essentials if state.collected_filters.get(f) is None]
 
     if missing:
-        # Ask for the next missing
+        # Ask for the next missing with more conversational responses
         next_missing = missing[0]
-        # Simple question templates - in future use prompts.system
-        question_map = {
-            "distrito": "¿En qué distrito te gustaría buscar?",
-            "area_min": "¿Cuál es el área mínima que buscas (en m²)?",
-            "estado": "¿Qué estado prefieres (DISPONIBLE, OCUPADA, MANTENIMIENTO, VENDIDA)?",
-            "presupuesto_max": "¿Cuál es tu presupuesto máximo?",
-            "dormitorios": "¿Cuántos dormitorios necesitas?",
-        }
-        reply = question_map.get(next_missing, "¿Puedes darme más detalles?")
+        
+        # Build context-aware question
+        if next_missing == "distrito":
+            reply = "¡Perfecto! ¿En qué distrito te gustaría buscar? (ej: La Molina, San Isidro, Miraflores)"
+        elif next_missing == "area_min":
+            reply = "Excelente. ¿Cuál es el área mínima que necesitas en m²? (ej: 80, 100, 150)"
+        elif next_missing == "estado":
+            reply = "¿Qué estado de propiedad prefieres? Puede ser: DISPONIBLE, OCUPADA, MANTENIMIENTO o VENDIDA"
+        elif next_missing == "presupuesto_max":
+            reply = "¿Cuál es tu presupuesto máximo? (en la moneda que prefieras)"
+        elif next_missing == "dormitorios":
+            reply = "¿Cuántos dormitorios necesitas? (1, 2, 3, etc.)"
+        else:
+            reply = "¿Puedes darme más detalles?"
+        
         state.messages.append({"role": "assistant", "content": reply})
         session_manager.save_conversation_state(session_id, state)
         return AgentResponse(session_id=session_id, reply=reply).model_dump()
@@ -88,11 +94,3 @@ async def handle_message(session_id: str | None, message: str) -> dict[str, Any]
     session_manager.save_conversation_state(session_id, state)
 
     return AgentResponse(session_id=session_id, reply=reply, data=results).model_dump()
-
-
-async def handle_message(session_id: str | None, message: str) -> dict[str, Any]:
-    """Handle an incoming user message and return agent response.
-
-    TODO: implement orchestration logic.
-    """
-    return {"ok": True, "session_id": session_id, "reply": "placeholder"}

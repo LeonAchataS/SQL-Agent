@@ -1,4 +1,4 @@
 .env
 database.sql
-
 /pycache/
+/__pycache__/

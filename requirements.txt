@@ -1,2 +1,4 @@
 pytest
 openai
+uvicorn[standard]
+asyncpg

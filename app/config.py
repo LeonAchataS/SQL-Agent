@@ -22,6 +22,9 @@ class Settings(BaseSettings):
     debug: bool = False
     database_url: str | None = None
     properties_limit: int = 5
+    api_host: str = "127.0.0.1"
+    api_port: int = 8000
+    api_reload: bool = False
 
 @lru_cache
 def get_settings() -> Settings:
